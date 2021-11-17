@@ -13,13 +13,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dndmodule:
+    path: dndmodule/
+
   cupertino_icons: ^1.0.2
+
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
-  drag_and_drop_lists: ^0.3.2+2
   snapping_page_scroll: ^2.0.2
 
 flutter:

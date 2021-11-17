@@ -1,7 +1,8 @@
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:dndmodule/drag_and_drop_item.dart';
+import 'package:dndmodule/drag_and_drop_list.dart';
+import 'package:dndmodule/drag_and_drop_lists.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snapping_page_scroll/snapping_page_scroll.dart';
 
 void main() {
   runApp(const MaterialApp(home: DragAndDrop()));
