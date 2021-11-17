@@ -20,6 +20,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^1.0.0
   drag_and_drop_lists: ^0.3.2+2
+  snapping_page_scroll: ^2.0.2
 
 flutter:
 
