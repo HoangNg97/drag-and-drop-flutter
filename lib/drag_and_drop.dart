@@ -14,7 +14,7 @@ class DragAndDropState extends State<DragAndDrop> {
   @override
   void initState() {
     super.initState();
-    list.add(buildBoard("Task", buildTasks(3)));
+    list.add(buildBoard("Task", buildTasks(15)));
     list.add(buildBoard("Doing", buildTasks(4)));
     list.add(buildBoard("Done", buildTasks(7)));
   }

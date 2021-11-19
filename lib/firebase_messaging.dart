@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,27 +10,50 @@ class Messaging extends StatefulWidget {
 }
 
 class MessagingState extends State<Messaging> {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String message = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text("Messaging Firebase"),
         ),
-        body: Expanded(
+        body: Center(
           child: Column(
             children: [
-              Container(
-                alignment: AlignmentDirectional.topCenter,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text("Press to receive message"),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          buildButton("Subscribe topic"),
+                          buildButton("Unsubscribe Topic"),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-              Container(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: const Text("test"),
-              )
+              Expanded(
+                child: Container(
+                  alignment: AlignmentDirectional.center,
+                  child: const Text("test"),
+                ),
+              ),
             ],
           ),
         ),
+      );
+
+  Widget buildButton(String text) => TextButton(
+        onPressed: () {},
+        child: Text(text),
       );
 }

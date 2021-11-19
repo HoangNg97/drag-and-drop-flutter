@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "388996175913",
+    "project_id": "fir-pdca",
+    "storage_bucket": "fir-pdca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388996175913:android:aab9a9ed9280eb1b902438",
+        "android_client_info": {
+          "package_name": "com.example.dragandropdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388996175913-9ikff4sj88km5n50hb6edog2nge0ciq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwWn_jvj7QlQldZtLLmmX1WQ4ocuxRZHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388996175913-9ikff4sj88km5n50hb6edog2nge0ciq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

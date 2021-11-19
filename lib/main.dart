@@ -1,9 +1,12 @@
 import 'package:dragandropdemo/drag_and_drop.dart';
 import 'package:dragandropdemo/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MaterialApp(home: Demo()));
 }
 
@@ -16,7 +19,7 @@ class Demo extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Demo"),
       ),
-      body: Expanded(
+      body: Center(
         child: Column(
           children: [
             TextButton(
