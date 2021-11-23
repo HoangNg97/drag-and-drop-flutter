@@ -1,4 +1,5 @@
 import 'package:dndmodule/drag_and_drop_lists.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DragAndDrop extends StatefulWidget {
@@ -45,50 +46,54 @@ class DragAndDropState extends State<DragAndDrop> {
           });
         },
         children: list,
+        lastListTargetSize: 0,
+        lastItemTargetHeight: 0,
       ),
     );
   }
 
   buildBoard(String name, List<DragAndDropItem> tasks) => DragAndDropList(
-        children: tasks,
-        header: Container(
-          width: 200,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(7),
-              ),
-              color: Colors.redAccent),
-          padding: const EdgeInsets.all(20),
-          child: Text(
-            name,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
+      children: tasks,
+      header: Container(
+        width: 200,
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(7),
             ),
+            color: Colors.redAccent),
+        padding: const EdgeInsets.all(20),
+        child: Text(
+          name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
           ),
         ),
-        leftSide: const VerticalDivider(
-          color: Colors.redAccent,
-          width: 5,
-          thickness: 5,
+      ),
+      leftSide: const VerticalDivider(
+        color: Colors.redAccent,
+        width: 5,
+        thickness: 5,
+      ),
+      rightSide: const VerticalDivider(
+        color: Colors.redAccent,
+        width: 5,
+        thickness: 5,
+      ),
+      footer: Container(
+        color: Colors.redAccent,
+        height: 5,
+      ),
+      lastTarget: Container(
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadiusDirectional.circular(5),
         ),
-        rightSide: const VerticalDivider(
-          color: Colors.redAccent,
-          width: 5,
-          thickness: 5,
-        ),
-        footer: Container(
-          color: Colors.redAccent,
-          height: 5,
-        ),
-        lastTarget: const SizedBox(
-          child: Center(
-            child: Icon(Icons.add),
-          ),
-          height: 15,
-        ),
-      );
+        alignment: AlignmentDirectional.center,
+        child: buildAddButton(name),
+      ));
 
   buildItem(String item) => DragAndDropItem(
         child: Card(
@@ -108,5 +113,23 @@ class DragAndDropState extends State<DragAndDrop> {
   buildTasks(int length) => List<DragAndDropItem>.generate(
         length,
         (index) => buildItem('Task $index'),
+      );
+
+  buildAddButton(String board) => IconButton(
+        icon: const Icon(Icons.add),
+        color: Colors.black,
+        onPressed: () {
+          setState(() {
+            late List<DragAndDropItem> children;
+            if (board == 'Task') {
+              children = list[0].children;
+            } else if (board == 'Doing') {
+              children = list[1].children;
+            } else {
+              children = list[2].children;
+            }
+            children.add(buildItem('Task ${children.length}'));
+          });
+        },
       );
 }
