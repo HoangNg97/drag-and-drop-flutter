@@ -30,36 +30,41 @@ class MessagingState extends State<Messaging> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? message = "";
   String sendmessage = "";
+  String token = '';
+  String senderToken ='';
 
   @override
   void initState() {
     super.initState();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     messaging
         .getToken()
-        .then((value) => {if (value != null) print('token is $value')});
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+        .then((value) => token = value!);
     createNotification();
     FirebaseMessaging.onMessage.listen((event) {
       setState(() {
         message = event.notification?.title;
-        print(event.senderId);
-        print(event.from);
-        print(event.messageId);
-        print(event.threadId);
       });
-      AndroidNotification? notification = event.notification?.android;
-      if (notification != null) {
-        flutterLocalNotificationsPlugin.show(
-            1,
-            event.notification?.title,
-            event.notification?.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-              ),
-            ));
+      print('sendertoken $senderToken');
+      print(token);
+      if(senderToken == token) {
+        return;
+      } else{
+        AndroidNotification? notification = event.notification?.android;
+        if (notification != null) {
+          flutterLocalNotificationsPlugin.show(
+              1,
+              event.notification?.title,
+              event.notification?.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                ),
+              ));
+        }
       }
+      senderToken = '';
     });
   }
 
@@ -84,6 +89,9 @@ class MessagingState extends State<Messaging> {
                             onPressed: () {
                               sendNotification(
                                   'this is test message', sendmessage);
+                              messaging
+                                  .getToken()
+                                  .then((value) => {if (value != null) senderToken = value});
                             },
                             child: const Text('Send notification'),
                           ),
