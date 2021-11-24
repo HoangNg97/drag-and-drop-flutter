@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,12 +26,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
-final moviesRef =
-    FirebaseFirestore.instance.collection('device').withConverter<Device>(
-          fromFirestore: (snapshots, _) => Device.fromJson(snapshots.data()!),
-          toFirestore: (device, _) => device.toJson(),
-        );
-
 class MessagingState extends State<Messaging> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? message = "";
@@ -43,10 +38,28 @@ class MessagingState extends State<Messaging> {
         .getToken()
         .then((value) => {if (value != null) print('token is $value')});
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    createNotification();
     FirebaseMessaging.onMessage.listen((event) {
       setState(() {
         message = event.notification?.title;
+        print(event.senderId);
+        print(event.from);
+        print(event.messageId);
+        print(event.threadId);
       });
+      AndroidNotification? notification = event.notification?.android;
+      if (notification != null) {
+        flutterLocalNotificationsPlugin.show(
+            1,
+            event.notification?.title,
+            event.notification?.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+              ),
+            ));
+      }
     });
   }
 
@@ -116,6 +129,27 @@ class MessagingState extends State<Messaging> {
       );
 }
 
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel',
+  'High Importance Notifications',
+  importance: Importance.max,
+);
+
+var initializationSettingsAndroid =
+    const AndroidInitializationSettings('@mipmap/ic_launcher');
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void createNotification() async {
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+  await flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(android: initializationSettingsAndroid));
+}
+
 Future<void> sendNotification(subject, title) async {
   const postUrl = 'https://fcm.googleapis.com/fcm/send';
 
@@ -129,6 +163,8 @@ Future<void> sendNotification(subject, title) async {
       "id": "1",
       "status": "done",
       "sound": 'default',
+      "isScheduled": "true",
+      "scheduledTime": "2021-11-24 17:34:00",
       "screen": Messaging.topic,
     },
     "to": toParams
