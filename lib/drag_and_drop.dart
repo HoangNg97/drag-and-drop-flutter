@@ -10,14 +10,22 @@ class DragAndDrop extends StatefulWidget {
 }
 
 class DragAndDropState extends State<DragAndDrop> {
-  List<DragAndDropList> list = [];
+  List<DragAndDropList> boards = [];
+  late List<DragAndDropItem> taskBoard;
+  late List<DragAndDropItem> doingBoard;
+  late List<DragAndDropItem> doneBoard;
 
   @override
   void initState() {
     super.initState();
-    list.add(buildBoard("Task", buildTasks(15)));
-    list.add(buildBoard("Doing", buildTasks(4)));
-    list.add(buildBoard("Done", buildTasks(7)));
+
+    taskBoard = buildTasks(2);
+    doingBoard = buildTasks(3);
+    doneBoard = buildTasks(4);
+
+    boards.add(buildBoard("Task", taskBoard));
+    boards.add(buildBoard("Doing", doingBoard));
+    boards.add(buildBoard("Done", doneBoard));
   }
 
   @override
@@ -34,18 +42,19 @@ class DragAndDropState extends State<DragAndDrop> {
         listDraggingWidth: 200,
         onListReorder: (int oldListIndex, int newListIndex) {
           setState(() {
-            var movedList = list.removeAt(oldListIndex);
-            list.insert(newListIndex, movedList);
+            var movedList = boards.removeAt(oldListIndex);
+            boards.insert(newListIndex, movedList);
           });
         },
         onItemReorder: (int oldItemIndex, int oldListIndex, int newItemIndex,
             int newListIndex) {
           setState(() {
-            var movedItem = list[oldListIndex].children.removeAt(oldItemIndex);
-            list[newListIndex].children.insert(newItemIndex, movedItem);
+            var movedItem =
+                boards[oldListIndex].children.removeAt(oldItemIndex);
+            boards[newListIndex].children.insert(newItemIndex, movedItem);
           });
         },
-        children: list,
+        children: boards,
         lastListTargetSize: 0,
         lastItemTargetHeight: 0,
       ),
@@ -122,11 +131,11 @@ class DragAndDropState extends State<DragAndDrop> {
           setState(() {
             late List<DragAndDropItem> children;
             if (board == 'Task') {
-              children = list[0].children;
+              children = taskBoard;
             } else if (board == 'Doing') {
-              children = list[1].children;
+              children = doingBoard;
             } else {
-              children = list[2].children;
+              children = doneBoard;
             }
             children.add(buildItem('Task ${children.length}'));
           });
