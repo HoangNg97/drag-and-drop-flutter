@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dragandropdemo/device.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class Messaging extends StatefulWidget {
   const Messaging({Key? key}) : super(key: key);
@@ -22,6 +24,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   print("Handling a background message: ${message.messageId}");
 }
+
+final moviesRef =
+    FirebaseFirestore.instance.collection('device').withConverter<Device>(
+          fromFirestore: (snapshots, _) => Device.fromJson(snapshots.data()!),
+          toFirestore: (device, _) => device.toJson(),
+        );
 
 class MessagingState extends State<Messaging> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -61,7 +69,8 @@ class MessagingState extends State<Messaging> {
                           buildButton("Quit project", false),
                           TextButton(
                             onPressed: () {
-                              sendFcmMessage('PDCA', sendmessage);
+                              sendNotification(
+                                  'this is test message', sendmessage);
                             },
                             child: const Text('Send notification'),
                           ),
@@ -69,7 +78,6 @@ class MessagingState extends State<Messaging> {
                             textInputAction: TextInputAction.done,
                             onChanged: (value) {
                               sendmessage = value;
-                              print(sendmessage);
                             },
                           ),
                         ],
@@ -106,39 +114,40 @@ class MessagingState extends State<Messaging> {
         },
         child: Text(text),
       );
+}
 
-  void sendMessage(String message) {
-    FirebaseMessaging.instance.sendMessage(
-      to: Messaging.topic,
-      data: {'PDCA': message},
-    );
-  }
+Future<void> sendNotification(subject, title) async {
+  const postUrl = 'https://fcm.googleapis.com/fcm/send';
 
-  Future<bool> sendFcmMessage(String title, String message) async {
-    try {
-      var url = 'https://fcm.googleapis.com/fcm/send';
-      var header = {
-        "Content-Type": "application/json",
-        "Authorization":
-            "key=AAAAWpH6mCk:APA91bFvdgFkq2NgKWGuoVzea4D02u9B5kYparOq1b7DlVWe-TkIq4RXBXXuMqDHGGZT_j5n4x_ntzgKarHWxtC-CWSfPRKa9M21Uzl5eBZCSfE1Yoplrf_x59TKHKfqc5M89g49XO-E",
-      };
-      var request = {
-        "notification": {
-          "title": title,
-          "text": message,
-          "sound": "default",
-          "color": "#990000",
-        },
-        "priority": "high",
-        "to": "/topics/all",
-      };
+  String toParams = "/topics/" + Messaging.topic;
 
-      var response = await Dio().post(url,
-          options: Options(headers: header), data: json.encode(request));
-      return true;
-    } catch (e, s) {
-      print(e);
-      return false;
-    }
+  final data = {
+    "notification": {"body": subject, "title": title},
+    "priority": "high",
+    "data": {
+      "click_action": "FLUTTER_NOTIFICATION_CLICK",
+      "id": "1",
+      "status": "done",
+      "sound": 'default',
+      "screen": Messaging.topic,
+    },
+    "to": toParams
+  };
+
+  final headers = {
+    'content-type': 'application/json',
+    'Authorization':
+        'key=AAAAWpH6mCk:APA91bFvdgFkq2NgKWGuoVzea4D02u9B5kYparOq1b7DlVWe-TkIq4RXBXXuMqDHGGZT_j5n4x_ntzgKarHWxtC-CWSfPRKa9M21Uzl5eBZCSfE1Yoplrf_x59TKHKfqc5M89g49XO-E'
+  };
+
+  final response = await http.post(Uri.parse(postUrl),
+      body: json.encode(data),
+      encoding: Encoding.getByName('utf-8'),
+      headers: headers);
+
+  if (response.statusCode == 200) {
+    print("true 200");
+  } else {
+    print(response.statusCode);
   }
 }
