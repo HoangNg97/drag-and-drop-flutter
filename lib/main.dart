@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MaterialApp(home: Demo()));
+  runApp(const MaterialApp(home: DragAndDrop()));
 }
 
 class Demo extends StatelessWidget {

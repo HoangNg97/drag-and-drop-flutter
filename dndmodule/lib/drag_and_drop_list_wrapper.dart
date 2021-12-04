@@ -1,17 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+
 import 'drag_and_drop_builder_parameters.dart';
 import 'drag_and_drop_list_interface.dart';
 import 'drag_handle.dart';
 import 'measure_size.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class DragAndDropListWrapper extends StatefulWidget {
   final DragAndDropListInterface dragAndDropList;
   final DragAndDropBuilderParameters parameters;
 
-  DragAndDropListWrapper(
-      {required this.dragAndDropList, required this.parameters, Key? key})
+  const DragAndDropListWrapper(
+      {required this.dragAndDropList,
+      required this.parameters,
+      Key? key})
       : super(key: key);
 
   @override
@@ -33,8 +36,7 @@ class _DragAndDropListWrapper extends State<DragAndDropListWrapper>
 
   @override
   Widget build(BuildContext context) {
-    Widget dragAndDropListContents =
-        widget.dragAndDropList.generateWidget(widget.parameters);
+    Widget dragAndDropListContents = widget.dragAndDropList.generateWidget(widget.parameters);
 
     Widget draggable;
     if (widget.dragAndDropList.canDrag) {
@@ -210,14 +212,15 @@ class _DragAndDropListWrapper extends State<DragAndDropListWrapper>
         child: stack,
       );
     }
-    if (widget.parameters.axis == Axis.horizontal &&
-        !widget.parameters.disableScrolling) {
-      toReturn = SingleChildScrollView(
-        child: Container(
-          child: toReturn,
-        ),
-      );
-    }
+    //start here
+    // if (widget.parameters.axis == Axis.horizontal &&
+    //     !widget.parameters.disableScrolling) {
+    //   toReturn = SingleChildScrollView(
+    //     child: Container(
+    //       child: toReturn,
+    //     ),
+    //   );
+    // }
 
     return toReturn;
   }

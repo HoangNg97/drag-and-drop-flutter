@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
 import 'drag_and_drop_builder_parameters.dart';
 import 'drag_and_drop_item.dart';
 import 'drag_and_drop_item_target.dart';
 import 'drag_and_drop_item_wrapper.dart';
 import 'drag_and_drop_list_interface.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DragAndDropList implements DragAndDropListInterface {
   /// The widget that is displayed at the top of the list.
@@ -65,9 +66,9 @@ class DragAndDropList implements DragAndDropListInterface {
   @override
   Widget generateWidget(DragAndDropBuilderParameters params) {
     var contents = <Widget>[];
-    if (header != null) {
-      contents.add(Flexible(child: header!));
-    }
+    // if (header != null) {
+    //   contents.add(Flexible(child: header!));
+    // }
     Widget intrinsicHeight = IntrinsicHeight(
       child: Row(
         mainAxisAlignment: horizontalAlignment,
@@ -93,17 +94,39 @@ class DragAndDropList implements DragAndDropListInterface {
     if (footer != null) {
       contents.add(Flexible(child: footer!));
     }
-
-    return Container(
-      width: params.axis == Axis.vertical
-          ? double.infinity
-          : params.listWidth - params.listPadding!.horizontal,
-      decoration: decoration ?? params.listDecoration,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: verticalAlignment,
-        children: contents,
+    //start here
+    var boardItem = <Widget>[];
+    if (header != null) {
+      boardItem.add(
+        SizedBox(
+          width: params.axis == Axis.vertical
+              ? double.infinity
+              : params.listWidth - params.listPadding!.horizontal,
+          child: header!,
+        ),
+      );
+    }
+    boardItem.add(
+      Flexible(
+        fit: FlexFit.loose,
+        child: SingleChildScrollView(
+          child: Container(
+            width: params.axis == Axis.vertical
+                ? double.infinity
+                : params.listWidth - params.listPadding!.horizontal,
+            decoration: decoration ?? params.listDecoration,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: verticalAlignment,
+              children: contents,
+            ),
+          ),
+        ),
       ),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: boardItem,
     );
   }
 
@@ -139,9 +162,10 @@ class DragAndDropList implements DragAndDropListInterface {
             ),
       ));
       contents.add(
+        //start here
         Expanded(
           child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: verticalAlignment,
               mainAxisSize: MainAxisSize.max,
