@@ -69,14 +69,13 @@ class DragAndDropList implements DragAndDropListInterface {
     // if (header != null) {
     //   contents.add(Flexible(child: header!));
     // }
-    Widget intrinsicHeight = IntrinsicHeight(
-      child: Row(
-        mainAxisAlignment: horizontalAlignment,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _generateDragAndDropListInnerContents(params),
-      ),
+    Widget intrinsicHeight = Row(
+      mainAxisAlignment: horizontalAlignment,
+      mainAxisSize: MainAxisSize.max,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: _generateDragAndDropListInnerContents(params),
     );
+
     if (params.axis == Axis.horizontal) {
       intrinsicHeight = Container(
         width: params.listWidth,
@@ -152,27 +151,70 @@ class DragAndDropList implements DragAndDropListInterface {
           allChildren.add(parameters.itemDivider!);
         }
       }
-      allChildren.add(DragAndDropItemTarget(
-        parent: this,
-        parameters: parameters,
-        onReorderOrAdd: parameters.onItemDropOnLastTarget!,
-        child: lastTarget ??
-            Container(
-              height: parameters.lastItemTargetHeight,
-            ),
-      ));
+      allChildren.add(
+        Listener(
+          child: DragAndDropItemTarget(
+            parent: this,
+            parameters: parameters,
+            onReorderOrAdd: parameters.onItemDropOnLastTarget!,
+            child: lastTarget ??
+                Container(
+                  height: parameters.lastItemTargetHeight,
+                ),
+          ),
+        ),
+      );
+      var scrollController = ScrollController();
       contents.add(
         //start here
         Expanded(
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: verticalAlignment,
-              mainAxisSize: MainAxisSize.max,
+          child: Listener(
+            child: ListView(
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              controller: scrollController,
               children: allChildren,
             ),
+            onPointerMove: (PointerMoveEvent event) {
+              if (event.position.dy > 700) {
+                // 120 is height of your draggable.
+                print(
+                    scrollController.offset.toString() + "       iiiiiiiiiii");
+                scrollController.animateTo(scrollController.offset + 10,
+                    duration: Duration(milliseconds: 30), curve: Curves.linear);
+              } else if (event.position.dy < 160) {
+                scrollController.animateTo(scrollController.offset - 10,
+                    duration: Duration(milliseconds: 30), curve: Curves.linear);
+              }
+            },
           ),
         ),
+
+        // Expanded(
+        //   child: SingleChildScrollView(
+        //     physics: BouncingScrollPhysics(),
+        //     controller: scrollController,
+        //     child: Listener(
+        //       child: Column(
+        //         crossAxisAlignment: verticalAlignment,
+        //         mainAxisSize: MainAxisSize.max,
+        //         children: allChildren,
+        //       ),
+        //       onPointerMove: (PointerMoveEvent event) {
+        //         if (event.position.dy > 700) {
+        //           // 120 is height of your draggable.
+        //           print(scrollController.offset.toString()+"       iiiiiiiiiii");
+        //           scrollController.animateTo(scrollController.offset + 10,
+        //               duration: Duration(milliseconds: 30), curve: Curves.linear);
+        //         }else if (event.position.dy <160){
+        //           scrollController.animateTo(scrollController.offset -10,
+        //               duration: Duration(milliseconds: 30), curve: Curves.linear);
+        //
+        //         }
+        //       },
+        //     ),
+        //   ),
+        // ),
       );
     } else {
       contents.add(

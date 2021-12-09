@@ -20,7 +20,7 @@ class DragAndDropState extends State<DragAndDrop> {
   void initState() {
     super.initState();
 
-    taskBoard = buildTasks(2);
+    taskBoard = buildTasks(10);
     doingBoard = buildTasks(3);
     doneBoard = buildTasks(4);
 
@@ -110,80 +110,80 @@ class DragAndDropState extends State<DragAndDrop> {
       );
 
   buildItem(String item) => DragAndDropItem(
-        child: Card(
-          elevation: 5,
-          margin: const EdgeInsets.all(5),
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Card(
+              elevation: 5,
+              margin: const EdgeInsets.all(5),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        customTitleTask(item),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius:
+                        Row(
+                          children: [
+                            customTitleTask(item),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              margin: const EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
                                   BorderRadiusDirectional.circular(5)),
-                          child: customTitleTask(item),
+                              child: customTitleTask(item),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          child: const Icon(Icons.account_circle_outlined),
                         ),
                       ],
                     ),
+                    Text(
+                      item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item +
+                          item,
+                      style: const TextStyle(fontSize: 18),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     Container(
-                      padding: const EdgeInsets.all(6),
-                      child: const Icon(Icons.account_circle_outlined),
-                    ),
-                  ],
-                ),
-                Text(
-                  item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item +
-                      item,
-                  style: const TextStyle(fontSize: 18),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-                  child: const Divider(
-                    height: 2,
-                    color: Colors.black,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.access_time),
-                        Text('dd-mm-yyyy'),
-                      ],
+                      margin: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                      child: const Divider(
+                        height: 2,
+                        color: Colors.black,
+                      ),
                     ),
                     Row(
-                      children: const [
-                        Icon(Icons.comment_outlined),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.access_time),
+                            Text('dd-mm-yyyy'),
+                          ],
+                        ),
+                        Row(
+                          children: const [
+                            Icon(Icons.comment_outlined),
+                          ],
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ),
-      );
+              ),
+            )
+        );
 
   buildTasks(int length) => List<DragAndDropItem>.generate(
         length,
